@@ -1,0 +1,113 @@
+version: "3.8"
+
+services:
+  idp-fridge-app-db:
+    image: postgres:13.2-alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: idp-fridge-app
+      POSTGRES_DB: idp-fridge-app
+      POSTGRES_PASSWORD: idp-fridge-app
+    volumes:
+      - idp-fridge-app-db-vol:/var/lib/postgresql/data
+    networks:
+      - database
+      - database-admin
+    deploy:
+      placement:
+        constraints: [node.role == manager]  # needs this because it has a volume
+
+  idp-fridge-app-crud:
+    build:
+      context: ./CRUD
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    depends_on:
+      - idp-fridge-app-db
+    networks:
+      - database
+      - auth
+      - bl
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+
+  idp-fridge-app-auth:
+    build:
+      context: ./Auth
+      dockerfile: Dockerfile
+    ports:
+      - 5001:5001
+    depends_on:
+      - idp-fridge-app-crud
+    deploy:
+      replicas: 3
+    networks:
+      - internal
+      - auth
+
+  idp-fridge-app-bl:
+    build:
+      context: ./BussinessLogic
+      dockerfile: Dockerfile
+    ports:
+      - 5002:5002
+    depends_on:
+      - idp-fridge-app-crud
+    deploy:
+      replicas: 3
+    networks:
+      - internal
+      - bl
+
+  adminer:
+    image: adminer
+    ports:
+        - 8080:8080
+    networks:
+        - database-admin
+    depends_on:
+        - idp-fridge-app-db
+
+  kong:
+    image: kong:latest
+    volumes:
+      - ./Kong:/usr/local/kong/declarative
+    environment:
+      KONG_DATABASE: 'off'
+      KONG_DECLARATIVE_CONFIG: /usr/local/kong/declarative/kong.yml
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001, 0.0.0.0:8444 ssl
+    ports:
+      - 80:8000
+      - 443:8443
+      - 8001:8001
+      - 8444:8444
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - internal
+
+
+
+volumes:
+  idp-fridge-app-db-vol:
+
+networks:
+  database:
+  database-admin:
+  internal:
+  auth:
+  bl:
+    

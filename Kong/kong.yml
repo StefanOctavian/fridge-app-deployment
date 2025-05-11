@@ -1,0 +1,36 @@
+_format_version: "2.1"
+
+services:
+  - name: auth-service
+    url: http://idp-fridge-app-auth/api
+    routes:
+      - name: auth-service-route
+        paths:
+          - /auth
+          
+  - name: bl-service
+    url: http://idp-fridge-app-bl/api
+    routes:
+      - name: bl-service-route
+        paths: 
+          - /api
+
+  - name: db-adminer
+    url: http://adminer:8080
+    routes:
+      - name: adminer-service
+        paths:
+          - /adminer
+
+consumers:
+  - username: app-user
+
+plugins:
+  - name: key-auth
+    service: auth-service
+  - name: key-auth
+    service: bl-service
+
+keyauth_credentials:
+  - consumer: app-user
+    key: my-secret-key
