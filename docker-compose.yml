@@ -20,10 +20,11 @@ services:
 
   idp-fridge-app-crud:
     build:
-      context: ./CRUD
-      dockerfile: Dockerfile
+      image: stefan-octavian/idp-fridge-app-crud
     ports:
-      - 5000:5000
+      - 80:5000
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
     depends_on:
       - idp-fridge-app-db
     networks:
@@ -41,10 +42,11 @@ services:
 
   idp-fridge-app-auth:
     build:
-      context: ./Auth
-      dockerfile: Dockerfile
+      image: stefan-octavian/idp-fridge-app-auth
     ports:
-      - 5001:5001
+      - 80:5001
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
     depends_on:
       - idp-fridge-app-crud
     deploy:
@@ -55,10 +57,11 @@ services:
 
   idp-fridge-app-bl:
     build:
-      context: ./BussinessLogic
-      dockerfile: Dockerfile
+      image: stefan-octavian/idp-fridge-app-bl
     ports:
-      - 5002:5002
+      - 80:5002
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
     depends_on:
       - idp-fridge-app-crud
     deploy:
