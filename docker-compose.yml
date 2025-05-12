@@ -19,7 +19,7 @@ services:
         constraints: [node.role == manager]  # needs this because it has a volume
 
   idp-fridge-app-crud:
-    image: stefanoctavian/idp-fridge-app-crud
+    image: stefanoctavian/idp-fridge-app-crud:latest
     ports:
       - 5000:80
     environment:
@@ -40,7 +40,7 @@ services:
         condition: on-failure
 
   idp-fridge-app-auth:
-    image: stefanoctavian/idp-fridge-app-auth
+    image: stefanoctavian/idp-fridge-app-auth:latest
     ports:
       - 5001:80
     environment:
@@ -54,7 +54,7 @@ services:
       - auth
 
   idp-fridge-app-bl:
-    image: stefanoctavian/idp-fridge-app-bl
+    image: stefanoctavian/idp-fridge-app-bl:latest
     ports:
       - 5002:80
     environment:
