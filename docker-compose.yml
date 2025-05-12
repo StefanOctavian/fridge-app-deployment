@@ -40,7 +40,7 @@ services:
         condition: on-failure
 
   idp-fridge-app-auth:
-    image: stefanoctavian/idp-fridge-app-auth:v1.3
+    image: stefanoctavian/idp-fridge-app-auth:v1.4
     ports:
       - 5001:8080
     environment:
@@ -54,7 +54,7 @@ services:
       - auth
 
   idp-fridge-app-bl:
-    image: stefanoctavian/idp-fridge-app-bl:v1.3
+    image: stefanoctavian/idp-fridge-app-bl:v1.4
     ports:
       - 5002:8080
     environment:
