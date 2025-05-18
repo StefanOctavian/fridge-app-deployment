@@ -8,12 +8,8 @@ common:
   ring:
     kvstore:
       store: inmemory
-    instance_interface_names:
-      - "lo"
   replication_factor: 1
   path_prefix: /tmp/loki
-  instance_interface_names:
-    - "lo"
 
 schema_config:
   configs:
