@@ -183,7 +183,6 @@ services:
         - 3100:3100
     networks:
       - logging
-      - visualizing
 
   grafana:
     image: grafana/grafana
@@ -198,6 +197,7 @@ services:
           constraints: [node.role == manager]
     networks:
       - visualizing
+      - logging
 
 
 volumes:
