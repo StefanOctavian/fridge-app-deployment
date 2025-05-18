@@ -137,6 +137,33 @@ services:
     depends_on:
       - agent
 
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ../configs/prometheus/prometheus-nexporter.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    networks:
+      - monitoring
+
+    node_exporter:
+      image: prom/node-exporter
+      deploy:
+        mode: global
+      volumes:
+        - /proc:/host/proc:ro
+        - /sys:/host/sys:ro
+        - /:/rootfs:ro
+      command:
+        - '--path.procfs=/host/proc'
+        - '--path.rootfs=/rootfs'
+        - '--path.sysfs=/host/sys'
+        - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+      ports:
+        - 9100:9100
+      networks:
+        - monitoring
+
 
 volumes:
   idp-fridge-app-db-vol:
@@ -152,4 +179,5 @@ networks:
   agent_network:
     driver: overlay
     attachable: true
+  monitoring:
     
