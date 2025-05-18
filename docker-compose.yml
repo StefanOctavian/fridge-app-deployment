@@ -203,6 +203,7 @@ services:
 volumes:
   idp-fridge-app-db-vol:
   portainer_data:
+  grafana-volume:
 
 
 networks:
